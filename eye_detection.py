@@ -1,9 +1,6 @@
 import cv2
 import numpy as np
 import mediapipe as mp
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 
 class EyeDetector:
     def __init__(self):
@@ -21,26 +18,6 @@ class EyeDetector:
         # Right eye
         self.RIGHT_EYE_INDICES = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246]
         
-        # Initialize the CNN model for eye detection
-        self.cnn_model = None
-        
-    def _create_cnn_model(self):
-        """Create a simple CNN model for eye detection"""
-        model = Sequential([
-            Conv2D(32, (3, 3), activation='relu', input_shape=(64, 64, 3)),
-            MaxPooling2D((2, 2)),
-            Conv2D(64, (3, 3), activation='relu'),
-            MaxPooling2D((2, 2)),
-            Conv2D(128, (3, 3), activation='relu'),
-            MaxPooling2D((2, 2)),
-            Flatten(),
-            Dense(128, activation='relu'),
-            Dropout(0.5),
-            Dense(1, activation='sigmoid')
-        ])
-        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-        return model
-    
     def detect_eyes_mediapipe(self, image):
         """
         Detect eyes using MediaPipe Face Mesh
@@ -149,7 +126,8 @@ class EyeDetector:
     
     def detect_eyes_cnn(self, image):
         """
-        Detect eyes using a CNN model
+        Placeholder for CNN-based eye detection
+        Currently falls back to MediaPipe for detection
         
         Args:
             image: Input image (BGR format)
@@ -159,12 +137,7 @@ class EyeDetector:
             right_eye_mask: Binary mask for right eye
             success: Boolean indicating if detection was successful
         """
-        # For demonstration purposes, we'll use MediaPipe for detection
-        # In a real implementation, you would train and use a CNN model
-        if self.cnn_model is None:
-            self.cnn_model = self._create_cnn_model()
-            
-        # For now, fall back to MediaPipe
+        # Fall back to MediaPipe
         return self.detect_eyes_mediapipe(image)
     
     def detect_eyes(self, image, method='mediapipe'):

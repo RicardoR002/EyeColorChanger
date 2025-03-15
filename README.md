@@ -17,9 +17,9 @@ A Streamlit application that allows users to change eye colors in images using c
   - Edge preservation strength
 
 - **Multiple Processing Methods**:
-  - CNN-based approach for accurate eye detection
+  - Different eye detection methods (MediaPipe, Haar Cascade)
   - HSV vs. RGB color space transformations
-  - Different edge detection methods (Sobel, Canny)
+  - Different edge detection methods (Sobel, Canny, Prewitt)
 
 - **Before/After Comparison**:
   - Side-by-side comparison of original and processed images
@@ -34,7 +34,7 @@ A Streamlit application that allows users to change eye colors in images using c
 
 ## Usage
 
-1. Run the Streamlit app:
+1. Run the Streamlit app locally:
    ```
    streamlit run app.py
    ```
@@ -42,12 +42,21 @@ A Streamlit application that allows users to change eye colors in images using c
 3. Adjust the parameters to achieve the desired eye color effect
 4. Download the processed image
 
+## Deployment to Streamlit Cloud
+
+This application can be easily deployed to Streamlit Cloud:
+
+1. Create a GitHub repository and push all the files (app.py, eye_detection.py, color_transformation.py, requirements.txt)
+2. Sign up for [Streamlit Cloud](https://streamlit.io/cloud)
+3. Create a new app in Streamlit Cloud and connect it to your GitHub repository
+4. Set the main file path to `app.py`
+5. Deploy the app
+
 ## Technical Details
 
 This application uses:
 - MediaPipe for face and eye detection
 - OpenCV for image processing
-- TensorFlow for CNN-based eye detection
 - Streamlit for the user interface
 - Various edge detection algorithms for preserving eye details
 

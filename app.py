@@ -288,7 +288,7 @@ with st.expander("About this app"):
     1. **Eye Detection**: First, the app detects the eyes in the image using one of three methods:
        - MediaPipe Face Mesh (most accurate for frontal faces)
        - Haar Cascade Classifiers (works for various face angles)
-       - CNN-based approach (experimental)
+       - CNN-based approach (experimental, currently uses MediaPipe)
     
     2. **Color Transformation**: Then, it applies color transformation using:
        - RGB color space: Direct color blending
