@@ -1,6 +1,6 @@
 # Eye Color Changer
 
-A Streamlit application that allows users to change eye colors in images using convolutional image filtering and edge detection techniques.
+A Streamlit application that allows users to change eye colors in images using image processing techniques.
 
 ## Features
 
@@ -44,14 +44,14 @@ A Streamlit application that allows users to change eye colors in images using c
 
 ## Deployment to Streamlit Cloud
 
-This application can be easily deployed to Streamlit Cloud:
+This application can be deployed to Streamlit Cloud:
 
 1. Create a GitHub repository and push all the files:
    - app.py
    - eye_detection.py
    - color_transformation.py
    - requirements.txt
-   - packages.txt (for system dependencies)
+   - packages.txt
 
 2. Sign up for [Streamlit Cloud](https://streamlit.io/cloud)
 
@@ -65,18 +65,17 @@ This application can be easily deployed to Streamlit Cloud:
 
 If you encounter dependency installation errors:
 
-- Check the logs in the Streamlit Cloud dashboard for specific error messages
-- Try using older, more stable versions of packages in requirements.txt
+- Try using the minimal set of dependencies in requirements.txt
 - Make sure packages.txt includes necessary system dependencies
-- Consider removing or replacing problematic packages
+- Simplify the app by removing complex features
+- Check the logs in Streamlit Cloud for specific error messages
 
 ## Technical Details
 
 This application uses:
 - MediaPipe for face and eye detection
-- OpenCV for image processing
+- OpenCV for image processing and edge detection
 - Streamlit for the user interface
-- Various edge detection algorithms for preserving eye details
 
 ## Requirements
 

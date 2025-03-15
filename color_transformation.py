@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from skimage import filters
 
 class ColorTransformer:
     def __init__(self):
@@ -37,18 +36,18 @@ class ColorTransformer:
             edge_mask = cv2.Canny(masked_gray, 50, 150)
             
         elif method == 'prewitt':
-            try:
-                # Prewitt edge detection using scikit-image
-                # Convert to float for scikit-image processing
-                masked_gray_float = masked_gray.astype(float) / 255.0
-                edge_mask = filters.prewitt(masked_gray_float)
-                edge_mask = (edge_mask * 255).astype(np.uint8)
-            except Exception as e:
-                print(f"Error in Prewitt edge detection: {e}")
-                # Fall back to Sobel if Prewitt fails
-                sobelx = cv2.Sobel(masked_gray, cv2.CV_64F, 1, 0, ksize=3)
-                sobely = cv2.Sobel(masked_gray, cv2.CV_64F, 0, 1, ksize=3)
-                edge_mask = cv2.magnitude(sobelx, sobely)
+            # Prewitt edge detection using OpenCV (approximation)
+            # Horizontal kernel
+            kernelx = np.array([[1, 1, 1], [0, 0, 0], [-1, -1, -1]], dtype=np.float32)
+            # Vertical kernel
+            kernely = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]], dtype=np.float32)
+            
+            # Apply kernels
+            prewittx = cv2.filter2D(masked_gray, -1, kernelx)
+            prewitty = cv2.filter2D(masked_gray, -1, kernely)
+            
+            # Combine results
+            edge_mask = cv2.magnitude(prewittx, prewitty)
             
         else:
             raise ValueError(f"Unknown edge detection method: {method}")

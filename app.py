@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 from PIL import Image
 import io
-import matplotlib.pyplot as plt
 from streamlit_image_comparison import image_comparison
 
 from eye_detection import EyeDetector
@@ -34,17 +33,6 @@ st.markdown("""
     .info-text {
         font-size: 1rem;
         color: #666666;
-    }
-    .stButton button {
-        background-color: #4B8BF5;
-        color: white;
-        border-radius: 5px;
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-        font-weight: bold;
-    }
-    .stButton button:hover {
-        background-color: #3A7AD5;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -136,7 +124,7 @@ if st.session_state.original_image is not None:
     st.sidebar.markdown("<h3>Eye Detection</h3>", unsafe_allow_html=True)
     detection_method = st.sidebar.selectbox(
         "Detection Method:",
-        ["mediapipe", "haarcascade", "cnn"],
+        ["mediapipe", "haarcascade"],
         help="Select the method for eye detection"
     )
     
@@ -285,10 +273,9 @@ with st.expander("About this app"):
     
     This app uses computer vision techniques to change eye color in images:
     
-    1. **Eye Detection**: First, the app detects the eyes in the image using one of three methods:
+    1. **Eye Detection**: First, the app detects the eyes in the image using one of two methods:
        - MediaPipe Face Mesh (most accurate for frontal faces)
        - Haar Cascade Classifiers (works for various face angles)
-       - CNN-based approach (experimental, currently uses MediaPipe)
     
     2. **Color Transformation**: Then, it applies color transformation using:
        - RGB color space: Direct color blending

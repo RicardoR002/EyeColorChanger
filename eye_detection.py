@@ -10,8 +10,7 @@ class EyeDetector:
         self.face_mesh = self.mp_face_mesh.FaceMesh(
             static_image_mode=True,
             max_num_faces=1,
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5
+            min_detection_confidence=0.5
         )
         
         # Eye landmarks indices in MediaPipe Face Mesh
@@ -40,37 +39,41 @@ class EyeDetector:
         left_eye_mask = np.zeros((h, w), dtype=np.uint8)
         right_eye_mask = np.zeros((h, w), dtype=np.uint8)
         
-        # Process the image
-        results = self.face_mesh.process(image_rgb)
-        
-        if not results.multi_face_landmarks:
-            return left_eye_mask, right_eye_mask, False
-        
-        # Get the first face
-        face_landmarks = results.multi_face_landmarks[0]
-        
-        # Extract eye landmarks
-        left_eye_points = []
-        right_eye_points = []
-        
-        for idx in self.LEFT_EYE_INDICES:
-            landmark = face_landmarks.landmark[idx]
-            x, y = int(landmark.x * w), int(landmark.y * h)
-            left_eye_points.append((x, y))
+        try:
+            # Process the image
+            results = self.face_mesh.process(image_rgb)
             
-        for idx in self.RIGHT_EYE_INDICES:
-            landmark = face_landmarks.landmark[idx]
-            x, y = int(landmark.x * w), int(landmark.y * h)
-            right_eye_points.append((x, y))
-        
-        # Create masks
-        left_eye_points = np.array(left_eye_points, dtype=np.int32)
-        right_eye_points = np.array(right_eye_points, dtype=np.int32)
-        
-        cv2.fillPoly(left_eye_mask, [left_eye_points], 255)
-        cv2.fillPoly(right_eye_mask, [right_eye_points], 255)
-        
-        return left_eye_mask, right_eye_mask, True
+            if not results.multi_face_landmarks:
+                return left_eye_mask, right_eye_mask, False
+            
+            # Get the first face
+            face_landmarks = results.multi_face_landmarks[0]
+            
+            # Extract eye landmarks
+            left_eye_points = []
+            right_eye_points = []
+            
+            for idx in self.LEFT_EYE_INDICES:
+                landmark = face_landmarks.landmark[idx]
+                x, y = int(landmark.x * w), int(landmark.y * h)
+                left_eye_points.append((x, y))
+                
+            for idx in self.RIGHT_EYE_INDICES:
+                landmark = face_landmarks.landmark[idx]
+                x, y = int(landmark.x * w), int(landmark.y * h)
+                right_eye_points.append((x, y))
+            
+            # Create masks
+            left_eye_points = np.array(left_eye_points, dtype=np.int32)
+            right_eye_points = np.array(right_eye_points, dtype=np.int32)
+            
+            cv2.fillPoly(left_eye_mask, [left_eye_points], 255)
+            cv2.fillPoly(right_eye_mask, [right_eye_points], 255)
+            
+            return left_eye_mask, right_eye_mask, True
+        except Exception as e:
+            print(f"Error in MediaPipe detection: {e}")
+            return left_eye_mask, right_eye_mask, False
     
     def detect_eyes_haarcascade(self, image):
         """
