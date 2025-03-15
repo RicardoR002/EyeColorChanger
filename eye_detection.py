@@ -6,10 +6,12 @@ class EyeDetector:
     def __init__(self):
         # Initialize MediaPipe Face Mesh
         self.mp_face_mesh = mp.solutions.face_mesh
+        # Adjust parameters for older MediaPipe version
         self.face_mesh = self.mp_face_mesh.FaceMesh(
             static_image_mode=True,
             max_num_faces=1,
-            min_detection_confidence=0.5
+            min_detection_confidence=0.5,
+            min_tracking_confidence=0.5
         )
         
         # Eye landmarks indices in MediaPipe Face Mesh
@@ -89,40 +91,44 @@ class EyeDetector:
         left_eye_mask = np.zeros((h, w), dtype=np.uint8)
         right_eye_mask = np.zeros((h, w), dtype=np.uint8)
         
-        # Load Haar Cascade classifiers
-        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-        eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
-        
-        # Detect faces
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-        
-        if len(faces) == 0:
+        try:
+            # Load Haar Cascade classifiers
+            face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
+            
+            # Detect faces
+            faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+            
+            if len(faces) == 0:
+                return left_eye_mask, right_eye_mask, False
+            
+            # Process the first face
+            x, y, w_face, h_face = faces[0]
+            face_roi = gray[y:y+h_face, x:x+w_face]
+            
+            # Detect eyes within the face
+            eyes = eye_cascade.detectMultiScale(face_roi)
+            
+            if len(eyes) < 2:
+                return left_eye_mask, right_eye_mask, False
+            
+            # Sort eyes by x-coordinate
+            eyes = sorted(eyes, key=lambda e: e[0])
+            
+            # Left eye (in image, right eye of the person)
+            ex, ey, ew, eh = eyes[0]
+            ex, ey = ex + x, ey + y  # Convert to original image coordinates
+            cv2.ellipse(right_eye_mask, (ex + ew//2, ey + eh//2), (ew//2, eh//2), 0, 0, 360, 255, -1)
+            
+            # Right eye (in image, left eye of the person)
+            ex, ey, ew, eh = eyes[1]
+            ex, ey = ex + x, ey + y  # Convert to original image coordinates
+            cv2.ellipse(left_eye_mask, (ex + ew//2, ey + eh//2), (ew//2, eh//2), 0, 0, 360, 255, -1)
+            
+            return left_eye_mask, right_eye_mask, True
+        except Exception as e:
+            print(f"Error in Haar Cascade detection: {e}")
             return left_eye_mask, right_eye_mask, False
-        
-        # Process the first face
-        x, y, w_face, h_face = faces[0]
-        face_roi = gray[y:y+h_face, x:x+w_face]
-        
-        # Detect eyes within the face
-        eyes = eye_cascade.detectMultiScale(face_roi)
-        
-        if len(eyes) < 2:
-            return left_eye_mask, right_eye_mask, False
-        
-        # Sort eyes by x-coordinate
-        eyes = sorted(eyes, key=lambda e: e[0])
-        
-        # Left eye (in image, right eye of the person)
-        ex, ey, ew, eh = eyes[0]
-        ex, ey = ex + x, ey + y  # Convert to original image coordinates
-        cv2.ellipse(right_eye_mask, (ex + ew//2, ey + eh//2), (ew//2, eh//2), 0, 0, 360, 255, -1)
-        
-        # Right eye (in image, left eye of the person)
-        ex, ey, ew, eh = eyes[1]
-        ex, ey = ex + x, ey + y  # Convert to original image coordinates
-        cv2.ellipse(left_eye_mask, (ex + ew//2, ey + eh//2), (ew//2, eh//2), 0, 0, 360, 255, -1)
-        
-        return left_eye_mask, right_eye_mask, True
     
     def detect_eyes_cnn(self, image):
         """

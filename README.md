@@ -46,11 +46,29 @@ A Streamlit application that allows users to change eye colors in images using c
 
 This application can be easily deployed to Streamlit Cloud:
 
-1. Create a GitHub repository and push all the files (app.py, eye_detection.py, color_transformation.py, requirements.txt)
+1. Create a GitHub repository and push all the files:
+   - app.py
+   - eye_detection.py
+   - color_transformation.py
+   - requirements.txt
+   - packages.txt (for system dependencies)
+
 2. Sign up for [Streamlit Cloud](https://streamlit.io/cloud)
+
 3. Create a new app in Streamlit Cloud and connect it to your GitHub repository
+
 4. Set the main file path to `app.py`
+
 5. Deploy the app
+
+### Troubleshooting Deployment Issues
+
+If you encounter dependency installation errors:
+
+- Check the logs in the Streamlit Cloud dashboard for specific error messages
+- Try using older, more stable versions of packages in requirements.txt
+- Make sure packages.txt includes necessary system dependencies
+- Consider removing or replacing problematic packages
 
 ## Technical Details
 
@@ -62,4 +80,5 @@ This application uses:
 
 ## Requirements
 
-See `requirements.txt` for a complete list of dependencies. 
+- Python packages: See `requirements.txt` for a complete list of dependencies
+- System packages: See `packages.txt` for required system libraries 
